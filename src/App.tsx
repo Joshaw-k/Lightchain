@@ -1589,6 +1589,32 @@ contract Token is Context, IERC20Metadata, Ownable {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [activeBlueTab]);
+
+  function shortenEthAddress(address: string, startChars = 6, endChars = 6) {
+    // Validate input
+    if (!address || typeof address !== 'string') {
+      return '';
+    }
+
+    // Remove any whitespace
+    address = address.trim();
+
+    // Check if it's a valid Ethereum address format (starts with 0x and is 42 chars long)
+    if (!address.startsWith('0x') || address.length !== 42) {
+      return address; // Return as-is if not a valid format
+    }
+
+    // If the address is already short enough, return it as-is
+    if (address.length <= startChars + endChars + 3) { // +3 for "0x" and "..."
+      return address;
+    }
+
+    // Extract the parts
+    const start = address.substring(0, startChars);
+    const end = address.substring(address.length - endChars);
+
+    return `${start}...${end}`;
+  }
   return (
     <div className="min-h-screen bg-white">
       {/* Top Status Bar */}
@@ -2349,6 +2375,9 @@ contract Token is Context, IERC20Metadata, Ownable {
                   <p className="text-xs text-gray-500 uppercase tracking-wide">TOKEN CONTRACT (WITH 18 DECIMALS)</p>
                   <div className="flex items-center">
                     <FileText className='scale-75 text-gray-400' />
+                    <a href="https://etherscan.io/address/0x9ca8530ca349c966fe9ef903df17a75b8a778927" className="text-[#0584C3] sm:hidden lg:block xl:hidden hover:underline text-sm font-mono">
+                      {shortenEthAddress("0x9ca8530ca349c966fe9ef903df17a75b8a778927")}
+                    </a>
                     <a href="https://etherscan.io/address/0x9ca8530ca349c966fe9ef903df17a75b8a778927" className="text-[#0584C3] hidden sm:block lg:hidden xl:block hover:underline text-sm font-mono">
                       0x9ca8530ca349c966fe9ef903df17a75b8a778927
                     </a>
